@@ -1,0 +1,79 @@
+package com.carpooling.backend.DTO;
+
+import lombok.Data;
+
+import java.math.BigDecimal;
+import java.time.LocalDateTime;
+import java.util.UUID;
+
+import com.carpooling.backend.Model.Ride;
+import com.carpooling.backend.Model.RideStatus;
+import com.carpooling.backend.Model.VehicleDetails;
+
+@Data
+public class RideResponse {
+    private UUID id;
+    private DriverInfo driver;
+    private Double startLatitude;
+    private Double startLongitude;
+    private Double endLatitude;
+    private Double endLongitude;
+    private LocalDateTime departureTime;
+    private BigDecimal price;
+    private String status;
+    private Integer availableSeats;
+    private LocalDateTime createdAt;
+    private String paymentStatus;
+    private String paymentMethod;
+    private BigDecimal platformFee;
+    private BigDecimal driverEarnings;
+
+    public RideResponse(Ride ride) {
+        this.id = ride.getId();
+        this.startLatitude = ride.getStartLatitude();
+        this.startLongitude = ride.getStartLongitude();
+        this.endLatitude = ride.getEndLatitude();
+        this.endLongitude = ride.getEndLongitude();
+        this.departureTime = ride.getDepartureTime();
+
+        // Safe assignments
+        this.price = ride.getPrice();
+        this.platformFee = ride.getPlatformFee();
+        this.driverEarnings = ride.getDriverEarnings();
+
+        this.status = ride.getStatus().name();
+        this.availableSeats = ride.getAvailableSeats();
+        this.createdAt = ride.getCreatedAt();
+        this.paymentStatus = ride.getPaymentStatus() != null
+                ? ride.getPaymentStatus().name()
+                : null;
+        this.paymentMethod = ride.getPaymentMethod();
+
+        if (ride.getDriver() != null) {
+            this.driver = new DriverInfo();
+            this.driver.setId(ride.getDriver().getId());
+            this.driver.setFirstName(ride.getDriver().getFirstName());
+            this.driver.setLastName(ride.getDriver().getLastName());
+            this.driver.setEmail(ride.getDriver().getEmail());
+            this.driver.setProfileImageUrl(ride.getDriver().getProfileImageUrl());
+            this.driver.setVehicleDetails(ride.getDriver().getVehicleDetails());
+
+            System.out.println("🚗 Driver: " +
+                    ride.getDriver().getFirstName() + " " +
+                    ride.getDriver().getLastName());
+            System.out.println("🚗 Vehicle Details in RideResponse: " +
+                    ride.getDriver().getVehicleDetails());
+        }
+    }
+
+
+    @Data
+    public static class DriverInfo {
+        private UUID id;
+        private String firstName;
+        private String lastName;
+        private String email;
+        private String profileImageUrl;
+        private VehicleDetails vehicleDetails;
+    }
+}
